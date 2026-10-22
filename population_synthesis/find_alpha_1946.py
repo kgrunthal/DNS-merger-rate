@@ -1,5 +1,5 @@
 import sys
-sys.path.append("../../PsrPopPy2-master/lib/python") # ..
+sys.path.append("/u/kgrunthal/PsrPopPy2/lib/python") # ..
 import numpy as np, astropy, scipy
 import os
 import matplotlib.pyplot as pl
@@ -36,9 +36,10 @@ model_name = './1946_z330.model'
 
 print "On 1946"
 
+resfolder = "/scratch/kgrunthal/DNS-merger-rate/population_synthesis/test/"
 for xx, npop in enumerate(pops):
 
-    filepath = "./pop_result_1946_new/npop={:5d}.npy".format(npop)    # check if the file already exists
+    filepath = resfolder + "/pop_result_1946/npop={:5d}.npy".format(npop)    # check if the file already exists
     # print "On population:{}".format(npop)
     if os.path.exists(filepath):
         continue
