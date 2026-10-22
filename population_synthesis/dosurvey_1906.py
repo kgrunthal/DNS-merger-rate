@@ -78,7 +78,85 @@ def write(surveyPops,
                 output.write(s)
 
 
+
+# ---------
+# Functions for MMGPS
+# ---------
+
+def bimodal_gaussian(x,sigma1,x1,A1,sigma2,x2,A2):
+
+    gaussian1 = A1 * np.exp(-(x - x1) ** 2 / (2 * sigma1 ** 2))
+    gaussian2 = A2 * np.exp(-(x - x2) ** 2 / (2 * sigma2 ** 2))
+
+    return gaussian1 + gaussian2
+
+def skewed_gaussian(x,sigma,x0,A,sk):
+
+	gaussian = A * np.exp(-(x - x0) ** 2 / (2 * sigma ** 2))
+	skew = (1+erf(sk*(x-x0)/(sigma*np.sqrt(2))))
+
+	return gaussian*skew
+
+def bimodal_skewed_gaussian(x,sigma1,x1,A1,sk1,sigma2,x2,A2,sk2):
+
+    gaussian1 = A1 * np.exp(-(x - x1) ** 2 / (2 * sigma1 ** 2))
+    gaussian2 = A2 * np.exp(-(x - x2) ** 2 / (2 * sigma2 ** 2))
+    skew1 = (1+erf(sk1*(x-x1)/(sigma1*np.sqrt(2))))
+    skew2 = (1+erf(sk2*(x-x2)/(sigma2*np.sqrt(2))))
+
+    return gaussian1*skew1 + gaussian2*skew2
+
+def random_beam_dimensions():
+
+    got_major=False
+
+    while got_major==False:
+        major_x_rand=rand()*45+20
+        major_y_rand=rand()*65
+        major_y=skewed_gaussian(major_x_rand,9.004263903263585,30.185883926792673,35.92039069270681,4.221258645066683)
+        if major_y_rand<major_y:
+            major=major_y_rand
+            got_major=True
+
+    got_minor=False
+
+    while got_minor==False:
+        minor_x_rand=rand()*15+20
+        minor_y_rand=rand()*252
+        minor_y=bimodal_skewed_gaussian(minor_x_rand,1.5813541343296091,23.19434345354499,131.6197129070408,8.523764790070745,1.3592721993829742,26.502940358203706,91.68825508633608,5.631889059801915)
+        if minor_y_rand<minor_y:
+            minor=minor_y_rand
+            got_minor=True
+
+    return major,minor #arcsec
+
+def random_tiling_dimensions():
+
+    got_tiling=False
+
+    while got_tiling==False:
+        tiling_x_rand=rand()*17+4
+        tiling_y_rand=rand()*108
+        tiling_y=bimodal_gaussian(tiling_x_rand,0.8982772232058504,12.5459929791275,80.58422913080236,2.263747678383036,12.760781687193873,27.395069356103154)
+        if tiling_y_rand<tiling_y:
+            tiling=tiling_y_rand
+            got_tiling=True
+
+    return tiling #arcmin
+
+def Gaussian2D_degradation(x, y, xSigma, ySigma):
+
+    return np.exp(-x**2/(2*xSigma**2))*np.exp(-y**2/(2*ySigma**2))
+
+
+# --------
+# --------
+
+
+
+
 def run(pop,
+        psrname,
         corr_func,
         corr_func_MP,
         corr_func_IP,
@@ -129,18 +207,60 @@ def run(pop,
             #This section is to add in degradation due to orbital motion of DNS pulsars.
             #Remove this if doing literally anything else.
             #Right now this is very ad-hoc and manual. Optimization possible, maybe not worth right now.
-            deg_fac_0509 = {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9983, '1534_survey': 0.9999, 'PMSURV': 0.8678, 'GBNCC': 0.9999}
-            deg_fac_1102 = {'PALFA_one_v_older': 0.9997, 'PHSURV': 0.9997, 'HTRU_low_1757': 0.9912, '1534_survey': 0.9999, 'PMSURV': 0.4649, 'GBNCC': 0.9999} #This is for 1913+1102
-            deg_fac_1913 = {'PALFA_one_v_older': 0.9953, 'PHSURV': 0.9956, 'HTRU_low_1757': 0.9569, '1534_survey': 0.9999, 'PMSURV': 0.7915, 'GBNCC': 0.9999}
-            deg_fac_1946 = {'PALFA_one_v_older': 0.9514, 'PHSURV': 0.9543, 'HTRU_low_1757': 0.6513, '1534_survey': 0.9999, 'PMSURV': 0.2368, 'GBNCC': 0.9995}
-            deg_fac_1757 = {'PALFA_one_v_older': 0.9710, 'PHSURV': 0.9716, 'HTRU_low_1757': 0.9255, '1534_survey': 0.9999, 'PMSURV': 0.5080, 'GBNCC': 0.9995}
-            deg_fac_1534 = {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9994, '1534_survey': 0.9999, 'PMSURV': 0.7759, 'GBNCC': 0.9999}
-            deg_fac_0737A = {'PALFA_one_v_older': 0.9910, 'PHSURV': 0.9916, 'HTRU_low_1757': 0.8371, '1534_survey': 0.9999, 'PMSURV': 0.2991, 'GBNCC': 0.9999}
-            deg_fac_0737B = {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9999, '1534_survey': 0.9999, 'PMSURV': 1, 'GBNCC': 0.9999}
-            deg_fac_1756 = {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9982, '1534_survey': 0.9999, 'PMSURV': 0.5598, 'GBNCC': 0.9999}
-            deg_fac_1906 = {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9994, '1534_survey': 0.9999, 'PMSURV': 0.7337, 'GBNCC':0.9999}
             
-            snr = snr * (deg_fac_1906[surv] ** 2)            #Please change this for each DNS
+            deg_fac_dict = {
+                "B1534+12":    {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9994, '1534_survey': 0.9999, 'PMSURV': 0.7759, 'GBNCC': 0.9999, 'MMGPS-L': 0.9995 },
+                "B1913+16":    {'PALFA_one_v_older': 0.9953, 'PHSURV': 0.9956, 'HTRU_low_1757': 0.9569, '1534_survey': 0.9999, 'PMSURV': 0.7915, 'GBNCC': 0.9999, 'MMGPS-L': 0.9936 },
+                "J0509+3801":  {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9983, '1534_survey': 0.9999, 'PMSURV': 0.8678, 'GBNCC': 0.9999, 'MMGPS-L': 0.9983 },
+                "J0737-3039A": {'PALFA_one_v_older': 0.9910, 'PHSURV': 0.9916, 'HTRU_low_1757': 0.8371, '1534_survey': 0.9999, 'PMSURV': 0.2991, 'GBNCC': 0.9999, 'MMGPS-L': 0.8371 },
+                "J0737-3039B": {},
+                "J1208-5936":  {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9998, '1534_survey': 0.9999, 'PMSURV': 0.8509, 'GBNCC': 0.9999, 'MMGPS-L': 0.9999 },
+                "J1756-2251":  {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9982, '1534_survey': 0.9999, 'PMSURV': 0.5598, 'GBNCC': 0.9999, 'MMGPS-L': 0.9983 },
+                "J1757-1854":  {'PALFA_one_v_older': 0.9710, 'PHSURV': 0.9716, 'HTRU_low_1757': 0.9255, '1534_survey': 0.9999, 'PMSURV': 0.5080, 'GBNCC': 0.9995, 'MMGPS-L': 0.9255 },
+                "J1856-0039":  {},
+                "J1906+0746":  {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9994, '1534_survey': 0.9999, 'PMSURV': 0.7337, 'GBNCC': 0.9999, 'MMGPS-L': 0.9995 },
+                "J1913+1102":  {'PALFA_one_v_older': 0.9997, 'PHSURV': 0.9997, 'HTRU_low_1757': 0.9912, '1534_survey': 0.9999, 'PMSURV': 0.4649, 'GBNCC': 0.9999, 'MMGPS-L': 0.9913 },
+                "J1946+2052":  {'PALFA_one_v_older': 0.9514, 'PHSURV': 0.9543, 'HTRU_low_1757': 0.6513, '1534_survey': 0.9999, 'PMSURV': 0.2368, 'GBNCC': 0.9995, 'MMGPS-L': 0.6514 },
+            }
+            
+            
+            
+            if surv == "MMGPS-L":
+                # Compute dimensions of beam.
+                (major_axis,minor_axis)=random_beam_dimensions()
+
+                #There are 2 possible configurations for this: the old tiling and the new tiling.
+                #The new tiling covers the entire circle, but it has a smaller overlap.
+                #The old tiling covers a central region of the beam with a tighter overlap.
+
+              	tiling_decider=rand()
+
+                if tiling_decider > 0.3915282003:
+
+                    #Squares for 480 beams spread across an hexagon with inner diameter of 29.85.
+                    #1.267911768=sqrt((6*(sin(30)/cos(30))*r**2)/480
+                    (x,y)=(rand()*1.267911768-0.633955884,rand()*1.267911768-0.633955884)
+
+                    beam_deg_factor=beam_deg_factor*Gaussian2D_degradation(x, y, 2*major_axis/60, 2*minor_axis/60)
+
+                elif tiling_decider < 0.3915282003:
+
+                    tiling_size=random_tiling_dimensions()
+
+                    #Older tiling with 480 beams spread across a circle with an inner diameter fraction to be decided by the distribution.
+                    if offset>tiling_size*1.05:
+
+                        beam_deg_factor=0
+
+                    else:
+
+                        beam_region=np.sqrt((np.pi*(tiling_size*0.95)**2)/480)
+                        (x,y)=(rand()*beam_region-beam_region/2,rand()*beam_region-beam_region/2)
+
+                        beam_deg_factor=beam_deg_factor*Gaussian2D_degradation(x, y, 2*major_axis/60, 2*minor_axis/60)
+
+
+            snr = snr * (deg_fac_dict[psrname][surv] ** 2)            
             ######################################################################################
             # add scintillation, if required
             # modifying S/N rather than flux is sensible because then
