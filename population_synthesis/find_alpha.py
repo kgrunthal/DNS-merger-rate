@@ -12,6 +12,7 @@ import os
 import matplotlib.pyplot as pl
 from scipy.optimize import curve_fit
 from scipy.misc import factorial
+import scipy.interpolate as pol
 
 import dosurvey as dosurvey, populate
 import dosurvey_1906 as dosurvey_1906, populate_1906_spline
@@ -45,8 +46,8 @@ pulsar_name = sys.argv[1]
 if pulsar_name == "J1906+0746":
     
     #new intensity profile correction
-    profile_MP = np.loadtxt("./profile_files/mainpulse_mirror_log.txt").transpose()  #load determined profiles
-    profile_IP = np.loadtxt("./profile_files/interpulse_mirror_log.txt").transpose()
+    profile_MP = np.loadtxt("mainpulse_mirror_log.txt").transpose()  #load determined profiles
+    profile_IP = np.loadtxt("interpulse_mirror_log.txt").transpose()
 
     t_MP = np.append([-20.,-19,-18.,-17.,-16.,], np.append(profile_MP[0][36:58],[16.,17.,18.,19.,20.]))  #internal knots MP
     t_IP = np.append(profile_IP[0][2:6], np.append([-5.1,-5.,-4.,-3.,0.,3.,4.,5.,5.1], profile_IP[0][88:92])) + 18.82    #internal knots IP
@@ -93,7 +94,11 @@ model_name = './{}_z330.model'.format(pulsar_name)
 print "On {}".format(pulsar_name)
 
 resfolder = "/scratch/kgrunthal/DNS-merger-rate/population_synthesis/test/"
+if not os.path.exists(resfolder):
+    os.makedirs(resfolder)
 
+if not os.path.exists(resfolder + "/pop_result_{}/".format(pulsar_name)):
+    os.makedirs(resfolder + "/pop_result_{}/".format(pulsar_name))
 
 detections = np.full((runs_of_pop, runs_per_pop), 0)
 

@@ -225,7 +225,7 @@ def run(pop,
             
             
             
-            if surv == "MMGPS-L" and snr =! 0. and snr =! -1 and snr =! -2 and snr =! -3:
+            if surv == "MMGPS-L" and snr != 0. and snr != -1 and snr != -2 and snr != -3:
                 # Compute dimensions of beam.
                 (major_axis,minor_axis)=random_beam_dimensions()
 

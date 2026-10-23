@@ -228,7 +228,7 @@ def run(pop,
                 "J1946+2052":  {'PALFA_one_v_older': 0.9514, 'PHSURV': 0.9543, 'HTRU_low_1757': 0.6513, '1534_survey': 0.9999, 'PMSURV': 0.2368, 'GBNCC': 0.9995, 'MMGPS-L': 0.6514, 'GPPS': 0.9135 },
             }
             
-            if surv == "MMGPS-L" and snr =! 0. and snr =! -1 and snr =! -2 and snr =! -3:
+            if surv == "MMGPS-L" and snr != 0. and snr != -1 and snr != -2 and snr != -3:
                 # Compute dimensions of beam.
                 (major_axis,minor_axis)=random_beam_dimensions()
 
