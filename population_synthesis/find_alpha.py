@@ -92,12 +92,14 @@ model_name = './{}_z330.model'.format(pulsar_name)
 
 print "On {}".format(pulsar_name)
 
+resfolder = "/scratch/kgrunthal/DNS-merger-rate/population_synthesis/test/"
+
 
 detections = np.full((runs_of_pop, runs_per_pop), 0)
 
 for xx, npop in enumerate(pops):
 
-    filepath = "./pop_result_{}/npop={:5d}.npy".format(pulsar_name, npop)  # check if the file already exists
+    filepath = resfolder + "/pop_result_{}/npop={:5d}.npy".format(pulsar_name, npop)  # check if the file already exists
     # print "On population:{}".format(npop)
     if os.path.exists(filepath):
         continue
