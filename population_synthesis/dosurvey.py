@@ -227,7 +227,8 @@ def run(pop,
                 "J1913+1102":  {'PALFA_one_v_older': 0.9997, 'PHSURV': 0.9997, 'HTRU_low_1757': 0.9912, '1534_survey': 0.9999, 'PMSURV': 0.4649, 'GBNCC': 0.9999, 'MMGPS-L': 0.9913, 'GPPS': 0.9995 },
                 "J1946+2052":  {'PALFA_one_v_older': 0.9514, 'PHSURV': 0.9543, 'HTRU_low_1757': 0.6513, '1534_survey': 0.9999, 'PMSURV': 0.2368, 'GBNCC': 0.9995, 'MMGPS-L': 0.6514, 'GPPS': 0.9135 },
             }
-            if surv == "MMGPS-L":
+            
+            if surv == "MMGPS-L" and snr =! 0. and snr =! -1 and snr =! -2 and snr =! -3:
                 # Compute dimensions of beam.
                 (major_axis,minor_axis)=random_beam_dimensions()
 
@@ -261,12 +262,11 @@ def run(pop,
 
                         beam_deg_factor=beam_deg_factor*Gaussian2D_degradation(x, y, 2*major_axis/60, 2*minor_axis/60)
 
-            snr = snr*beam_deg_factor
+                snr = snr*beam_deg_factor
+            
                 
-            if snr==-1 or snr==-2 or snr==-3:
-            	snr = snr
                 
-            else:
+            if snr > 0.: 
                 snr = snr * (deg_fac_dict[psrname][surv] ** 2)  
             
 

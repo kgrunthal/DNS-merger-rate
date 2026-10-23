@@ -225,7 +225,7 @@ def run(pop,
             
             
             
-            if surv == "MMGPS-L":
+            if surv == "MMGPS-L" and snr =! 0. and snr =! -1 and snr =! -2 and snr =! -3:
                 # Compute dimensions of beam.
                 (major_axis,minor_axis)=random_beam_dimensions()
 
@@ -258,9 +258,13 @@ def run(pop,
                         (x,y)=(rand()*beam_region-beam_region/2,rand()*beam_region-beam_region/2)
 
                         beam_deg_factor=beam_deg_factor*Gaussian2D_degradation(x, y, 2*major_axis/60, 2*minor_axis/60)
+                    
+                    
+                snr = snr*beam_deg_factor
 
 
-            snr = snr * (deg_fac_dict[psrname][surv] ** 2)            
+            if snr > 0.: 
+                snr = snr * (deg_fac_dict[psrname][surv] ** 2)              
             ######################################################################################
             # add scintillation, if required
             # modifying S/N rather than flux is sensible because then
