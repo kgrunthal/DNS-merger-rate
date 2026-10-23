@@ -4,8 +4,12 @@ import sys
 import argparse
 import math
 import random
+from numpy.random import rand
+import numpy as np
+from scipy.special import erf
 
 import cPickle
+
 
 from population import Population
 from pulsar import Pulsar
