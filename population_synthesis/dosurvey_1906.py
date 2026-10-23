@@ -201,7 +201,7 @@ def run(pop,
                 continue
 
             # is the pulsar over the detection threshold?
-            snr = s.SNRcalc(psr, pop,accelsearch,jerksearch,rratssearch)
+            (snr, beam_deg_factor, offset)  = s.SNRcalc(psr, pop,accelsearch,jerksearch,rratssearch)
             #print snr
             ######################################################################################
             #This section is to add in degradation due to orbital motion of DNS pulsars.
