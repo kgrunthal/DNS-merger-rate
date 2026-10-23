@@ -1,0 +1,24 @@
+###############################################################################
+# MMGPS-L: MPIfR-MeerKAT Galactic Plane Survey, L-band
+# Approximate population-synthesis model; not a full beam/pointing simulation.
+###############################################################################
+  1.50  ! effective survey degradation (beta=1.05, search efficiency=0.70)
+  1.92  ! MeerKAT core gain (K/Jy)
+  637.0 ! integration time (s)
+  0.153 ! sampling time (ms)
+  22.5  ! receiver plus spillover temperature (K); sky added by survey.py
+  1284.0 ! centre frequency (MHz)
+  856.0 ! nominal L-band bandwidth (MHz)
+  0.417 ! channel bandwidth (MHz)
+  2     ! number of polarizations
+  60.0  ! approximate primary-beam FWHM (arcmin); simplified model
+  0.0   ! minimum RA (deg)
+  360.0 ! maximum RA (deg)
+  -90.0 ! minimum DEC (deg)
+  45.0  ! maximum DEC (deg), approximate MeerKAT visibility
+  -100.0 ! minimum Galactic longitude (deg)
+  -10.0  ! maximum Galactic longitude (deg)
+  0.0   ! minimum abs(Galactic latitude) (deg)
+  5.2   ! maximum abs(Galactic latitude) (deg)
+  1.0   ! fractional survey coverage (0-1)
+  9.0   ! minimum signal-to-noise

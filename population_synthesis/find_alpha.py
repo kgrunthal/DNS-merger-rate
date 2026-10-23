@@ -113,7 +113,7 @@ for xx, npop in enumerate(pops):
                     
                 population = dosurvey_1906.loadModel(model_name)
                     
-                output = dosurvey_1906.run(population, combine_spline, corr_func_MP, corr_func_IP, corr_norm, surveys, nostdout = True)
+                output = dosurvey_1906.run(population, pulsar_name, combine_spline, corr_func_MP, corr_func_IP, corr_norm, surveys, nostdout = True)
                     
                 detections[ii][jj] = output[0][2].ndet + output[1][2].ndet + output[2][2].ndet + output[3][2].ndet + output[4][2].ndet + output[5][2].ndet
     
@@ -133,7 +133,7 @@ for xx, npop in enumerate(pops):
                 
                 population = dosurvey.loadModel(model_name)
             
-                output = dosurvey.run(population, surveys, nostdout = True)
+                output = dosurvey.run(population, pulsar_name, surveys, nostdout = True)
             
                 detections[ii][jj] = output[0][2].ndet + output[1][2].ndet + output[2][2].ndet + output[3][2].ndet + output[4][2].ndet + output[5][2].ndet
             

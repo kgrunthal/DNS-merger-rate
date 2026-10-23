@@ -214,18 +214,18 @@ def run(pop,
             #Remove this if doing literally anything else.
             #Right now this is very ad-hoc and manual. Optimization possible, maybe not worth right now.
             deg_fac_dict = {
-                "B1534+12":    {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9994, '1534_survey': 0.9999, 'PMSURV': 0.7759, 'GBNCC': 0.9999, 'MMGPS-L': 0.9995 },
-                "B1913+16":    {'PALFA_one_v_older': 0.9953, 'PHSURV': 0.9956, 'HTRU_low_1757': 0.9569, '1534_survey': 0.9999, 'PMSURV': 0.7915, 'GBNCC': 0.9999, 'MMGPS-L': 0.9936 },
-                "J0509+3801":  {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9983, '1534_survey': 0.9999, 'PMSURV': 0.8678, 'GBNCC': 0.9999, 'MMGPS-L': 0.9983 },
-                "J0737-3039A": {'PALFA_one_v_older': 0.9910, 'PHSURV': 0.9916, 'HTRU_low_1757': 0.8371, '1534_survey': 0.9999, 'PMSURV': 0.2991, 'GBNCC': 0.9999, 'MMGPS-L': 0.8371 },
+                "B1534+12":    {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9994, '1534_survey': 0.9999, 'PMSURV': 0.7759, 'GBNCC': 0.9999, 'MMGPS-L': 0.9995, 'GPPS': 0.9999 },
+                "B1913+16":    {'PALFA_one_v_older': 0.9953, 'PHSURV': 0.9956, 'HTRU_low_1757': 0.9569, '1534_survey': 0.9999, 'PMSURV': 0.7915, 'GBNCC': 0.9999, 'MMGPS-L': 0.9936, 'GPPS': 0.9996 },
+                "J0509+3801":  {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9983, '1534_survey': 0.9999, 'PMSURV': 0.8678, 'GBNCC': 0.9999, 'MMGPS-L': 0.9983, 'GPPS': 0.9997 },
+                "J0737-3039A": {'PALFA_one_v_older': 0.9910, 'PHSURV': 0.9916, 'HTRU_low_1757': 0.8371, '1534_survey': 0.9999, 'PMSURV': 0.2991, 'GBNCC': 0.9999, 'MMGPS-L': 0.8371, 'GPPS': 0.9825 },
                 "J0737-3039B": {},
-                "J1208-5936":  {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9998, '1534_survey': 0.9999, 'PMSURV': 0.8509, 'GBNCC': 0.9999, 'MMGPS-L': 0.9999 },
-                "J1756-2251":  {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9982, '1534_survey': 0.9999, 'PMSURV': 0.5598, 'GBNCC': 0.9999, 'MMGPS-L': 0.9983 },
-                "J1757-1854":  {'PALFA_one_v_older': 0.9710, 'PHSURV': 0.9716, 'HTRU_low_1757': 0.9255, '1534_survey': 0.9999, 'PMSURV': 0.5080, 'GBNCC': 0.9995, 'MMGPS-L': 0.9255 },
-                "J1856-0039":  {},
-                "J1906+0746":  {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9994, '1534_survey': 0.9999, 'PMSURV': 0.7337, 'GBNCC': 0.9999, 'MMGPS-L': 0.9995 },
-                "J1913+1102":  {'PALFA_one_v_older': 0.9997, 'PHSURV': 0.9997, 'HTRU_low_1757': 0.9912, '1534_survey': 0.9999, 'PMSURV': 0.4649, 'GBNCC': 0.9999, 'MMGPS-L': 0.9913 },
-                "J1946+2052":  {'PALFA_one_v_older': 0.9514, 'PHSURV': 0.9543, 'HTRU_low_1757': 0.6513, '1534_survey': 0.9999, 'PMSURV': 0.2368, 'GBNCC': 0.9995, 'MMGPS-L': 0.6514 },
+                "J1208-5936":  {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9998, '1534_survey': 0.9999, 'PMSURV': 0.8509, 'GBNCC': 0.9999, 'MMGPS-L': 0.9999, 'GPPS': 0.9999 },
+                "J1756-2251":  {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9982, '1534_survey': 0.9999, 'PMSURV': 0.5598, 'GBNCC': 0.9999, 'MMGPS-L': 0.9983, 'GPPS': 0.9999 },
+                "J1757-1854":  {'PALFA_one_v_older': 0.9710, 'PHSURV': 0.9716, 'HTRU_low_1757': 0.9255, '1534_survey': 0.9999, 'PMSURV': 0.5080, 'GBNCC': 0.9995, 'MMGPS-L': 0.9255, 'GPPS': 0.9647 },
+                "J1856-0039":  {'PALFA_one_v_older': 0.9953, 'PHSURV': 0.9956, 'HTRU_low_1757': 0.9813, '1534_survey': 0.9999, 'PMSURV': 0.3197, 'GBNCC': 0.9999, 'MMGPS-L': 0.7772, 'GPPS': 0.9910},
+                "J1906+0746":  {'PALFA_one_v_older': 0.9999, 'PHSURV': 0.9999, 'HTRU_low_1757': 0.9994, '1534_survey': 0.9999, 'PMSURV': 0.7337, 'GBNCC': 0.9999, 'MMGPS-L': 0.9995, 'GPPS': 0.9999 },
+                "J1913+1102":  {'PALFA_one_v_older': 0.9997, 'PHSURV': 0.9997, 'HTRU_low_1757': 0.9912, '1534_survey': 0.9999, 'PMSURV': 0.4649, 'GBNCC': 0.9999, 'MMGPS-L': 0.9913, 'GPPS': 0.9995 },
+                "J1946+2052":  {'PALFA_one_v_older': 0.9514, 'PHSURV': 0.9543, 'HTRU_low_1757': 0.6513, '1534_survey': 0.9999, 'PMSURV': 0.2368, 'GBNCC': 0.9995, 'MMGPS-L': 0.6514, 'GPPS': 0.9135 },
             }
             if surv == "MMGPS-L":
                 # Compute dimensions of beam.
