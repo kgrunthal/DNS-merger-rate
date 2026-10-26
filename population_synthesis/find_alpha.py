@@ -80,7 +80,7 @@ pulsar_dict = {
 
 surveys = ['PALFA_one_v_older', 'PHSURV', 'HTRU_low_1757', '1534_survey', 'PMSURV', 'GBNCC', "MMGPS-L", "GPPS"]
 
-pops = np.arange(1710, 2000, 100) #set back lower limit to 10
+pops = np.arange(10, 2000, 100) #set back lower limit to 10
 runs_of_pop = 100
 runs_per_pop = 100
 
@@ -94,7 +94,7 @@ model_name = './{}_z330.model'.format(pulsar_name)
 
 print "On {}".format(pulsar_name)
 
-resfolder = "/scratch/kgrunthal/DNS-merger-rate/population_synthesis/test/"
+resfolder = "/scratch/kgrunthal/DNS-merger-rate/population_synthesis/popeval_res/"
 if not os.path.exists(resfolder):
     os.makedirs(resfolder)
 
