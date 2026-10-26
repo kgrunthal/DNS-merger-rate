@@ -5,10 +5,14 @@ Created on Thu Oct 15 11:52:33 2026
 @author: kgrun
 """
 
+
+import json
 import numpy as np
 
-
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+ 
 
 import scipy
 import scipy.signal as sig
@@ -129,22 +133,32 @@ def get_rate_pdfs(N_tots, psrdict):
 # J0737B & J1906:   non-recycled companion; t_d = time until PSR crosses death line
 # 
 
-# alpha from Colom i Bernadich et al. 2023 paper
 # fb(1906) = 1 bc of profile implementation
 # beaming correction factor for unknown fbs is # the average from the known fbs
 pulsar_dict = {
-    "B1534+12":    {"alpha": 0.01415,    "t_age": 208,   "t_d": 2700, "f_b": 6.0},
-    "B1913+16":    {"alpha": 0.00914,    "t_age": 77,    "t_d": 301,  "f_b": 5.7},
-    "J0509+3801":  {"alpha": 0.01008,    "t_age": 153,   "t_d": 607,  "f_b": 4.6},  # newly added by Pol et al. 2020
-    "J0737-3039A": {"alpha": 0.00429,    "t_age": 159,   "t_d": 85,   "f_b": 2.0},
-    "J1208-5936":  {"alpha": 0.01157,    "t_age": 2500,  "t_d": 7200, "f_b": 4.6},  # MMGPS discovery
-    "J1756-2251":  {"alpha": 0.01290,    "t_age": 396,   "t_d": 1690, "f_b": 4.6},
-    "J1757-1854":  {"alpha": 0.00916,    "t_age": 87,    "t_d": 76,   "f_b": 4.6},
-    "J1906+0746":  {"alpha": 0.00368,    "t_age": 0.11,  "t_d": 60,   "f_b": 1.0},  # modified pulse profile
-    "J1913+1102":  {"alpha": 0.01010,    "t_age": 2625,  "t_d": 500,  "f_b": 4.6},
-    "J1946+2052":  {"alpha": 0.00609,    "t_age": 247,   "t_d": 46,   "f_b": 4.6},
+    "B1534+12":    {"t_age": 208,   "t_d": 2700, "f_b": 6.0},
+    "B1913+16":    {"t_age": 77,    "t_d": 301,  "f_b": 5.7},
+    "J0509+3801":  {"t_age": 153,   "t_d": 607,  "f_b": 4.6},  # newly added by Pol et al. 2020
+    "J0737-3039A": {"t_age": 159,   "t_d": 85,   "f_b": 2.0},
+    "J1208-5936":  {"t_age": 2500,  "t_d": 7200, "f_b": 4.6},  # MMGPS discovery
+    "J1756-2251":  {"t_age": 396,   "t_d": 1690, "f_b": 4.6},
+    "J1757-1854":  {"t_age": 87,    "t_d": 76,   "f_b": 4.6},
+    "J1906+0746":  {"t_age": 0.11,  "t_d": 60,   "f_b": 1.0},  # modified pulse profile
+    "J1913+1102":  {"t_age": 2625,  "t_d": 500,  "f_b": 4.6},
+    "J1946+2052":  {"t_age": 247,   "t_d": 46,   "f_b": 4.6},
 }
 
+
+
+result_dir = "./population_synthesis/test/"
+alphares_dict = json.load(open(result_dir + "alpha_dict.json", "r"))
+
+
+for pulsar_name in pulsar_dict:
+    if pulsar_name in alphares_dict:
+        pulsar_dict[pulsar_name]["alpha"] = alphares_dict[pulsar_name][0]
+    else:
+        print(f"Warning: {pulsar_name} not found in alphares_dict")
 
 
 
@@ -329,7 +343,7 @@ plt.xscale('log')
 
 plt.grid(True, which = 'both')
 plt.tight_layout()
-plt.savefig("mw_merger_rate_new.pdf")
+plt.savefig(result_dir + "mw_merger_rate_new.pdf")
 plt.show()
 
 
@@ -354,7 +368,7 @@ plt.xlim(1, 40)
 plt.grid(True, which = 'both')
 plt.tight_layout()
 
-plt.savefig("complete_LIGO_rate_new.pdf")
+plt.savefig(result_dir + "complete_LIGO_rate_new.pdf")
 plt.show()
 
 
