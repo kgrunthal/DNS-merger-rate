@@ -80,7 +80,7 @@ pulsar_dict = {
 
 surveys = ['PALFA_one_v_older', 'PHSURV', 'HTRU_low_1757', '1534_survey', 'PMSURV', 'GBNCC', "MMGPS-L", "GPPS"]
 
-pops = np.arange(10, 2000, 100)
+pops = np.arange(1710, 2000, 100) #set back lower limit to 10
 runs_of_pop = 100
 runs_per_pop = 100
 
@@ -113,7 +113,13 @@ for xx, npop in enumerate(pops):
     if pulsar_name == "J1906+0746":
         for ii in range(runs_of_pop):
         
-            pop = populate_1906_spline.generate(npop, combine_spline, corr_func_MP, corr_func_IP, corr_norm, pDistPars = [log_p_1906_0746, 0.0], duty_percent = 1., orbits = False, nostdout = True, zscale = 0.33, siDistPars=[-1.4, 1.0], lumDistPars = lum_params)
+            pop = populate_1906_spline.generate(npop, 
+                                                combine_spline, corr_func_MP, corr_func_IP, corr_norm,
+                                                pDistPars = [pulsar_dict[pulsar_name]["log_p"], 0.0],
+                                                duty_percent = pulsar_dict[pulsar_name]["duty"],
+                                                orbits = False, nostdout = True,
+                                                zscale = 0.33, siDistPars=[-1.4, 1.0],
+                                                lumDistPars = lum_params)
             pop.write(outf = model_name)
         
         

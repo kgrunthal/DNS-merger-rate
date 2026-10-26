@@ -1,6 +1,7 @@
 #!/bin/bash
-#SBATCH --time=01:00:00
-#SBATCH --mem=2G
+#SBATCH --time=04:00:00
+#SBATCH --partition=short.q
+#SBATCH --mem=0
 #SBATCH --cpus-per-task=1
 
 # Get input name
