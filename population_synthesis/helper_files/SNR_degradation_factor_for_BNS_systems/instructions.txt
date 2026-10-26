@@ -1,0 +1,19 @@
+These are simple fortran programmes, just compile and run.
+
+(i) gamma1_real.f gives gamma1
+(ii) gamma2_real.f gives gamma2
+(iii) gamma3_real.f gives gamma3
+
+The inputs are in the file params.in, from top to bottom:
+
+harmonic number (m)
+observation duration (Tobs)
+pulsar mass in solar mass (m1input)
+companion mass in solar mass (m2input)
+spin period in second (Ps)
+longitude of periastron in degress (omperinput)
+orbital inclination angle in degree (ideg)
+eccentricity (ec)
+orbital period in days (Pod)
+
+
