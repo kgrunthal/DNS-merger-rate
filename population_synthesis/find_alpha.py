@@ -149,7 +149,7 @@ for xx, npop in enumerate(pops):
             
                 output = dosurvey.run(population, pulsar_name, surveys, nostdout = True)
             
-                detections[ii][jj] = output[0][2].ndet + output[1][2].ndet + output[2][2].ndet + output[3][2].ndet + output[4][2].ndet + output[5][2].ndet
+                detections[ii][jj] = sum(output[n][2].ndet for n in range(len(surveys)))
             
     
     np.save(filepath, detections)
