@@ -6,24 +6,13 @@ Created on Mon Oct 26 14:08:44 2026
 """
 
 
-import os, glob, sys, json
-import numpy as np, astropy, scipy
-import matplotlib
+import os, glob, json
+import numpy as np, scipy
+
 
 import matplotlib.pyplot as pl
 from scipy.optimize import curve_fit
-#from scipy.misc import factorial
-import scipy
-#import scipy.signal as sig
-#import scipy.stats as st
-#from scipy.interpolate import interp1d
-#import seaborn
 
-#import plot_conf_int
-#import dosurvey, populate
-
-#%pylab
-#%matplotlib inline
 
 
 def Poisson(x, lam):
@@ -51,7 +40,7 @@ runs_per_pop = 100
 n_bins = runs_of_pop + runs_per_pop      # total number of trials for the population
 xaxis = np.arange(0, 200, 1)
 
-result_dir = "./population_synthesis/test/"
+result_dir = "./population_synthesis/popeval_res/"
 
 for pname in psr_names:
     folderpath = result_dir + "pop_result_{}".format(pname)

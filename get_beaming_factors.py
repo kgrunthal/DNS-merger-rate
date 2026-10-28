@@ -80,10 +80,11 @@ def fb_eff_1757(Ntrials):
     
     rho1 = Rho(alpha1, beta1, W10_draws)
     rho2 = Rho(alpha2, beta2, W10_draws)
+    #print(rho1)
     
-    fbeff1 = fb_eff(alpha1, rho1)
-    fbeff2 = fb_eff(alpha2, rho2)
-    
+    fbeff1 = fb_eff(np.pi-alpha1, rho1)
+    fbeff2 = fb_eff(np.pi-alpha2, rho2)
+
     
     return fbeff1, fbeff2
 
@@ -105,6 +106,7 @@ def fb_eff_1946(Ntrials):
 
 f1, f2 = fb_eff_1757(50000)
 
+
 peak, lower, upper = get_peak_and_hdi(np.concatenate((f1,f2)))
 
 print(f"Peak: {peak:.3f}")
@@ -113,6 +115,7 @@ print(f"+1σ: {upper - peak:.3f}  (upper bound: {upper:.3f})")
 print(f"Result: {peak:.3f} +{upper-peak:.3f}/-{peak-lower:.3f}")
 print()
 print()
+
 
 fb1946 = fb_eff_1946(100000)
 

@@ -9,8 +9,8 @@ Created on Thu Oct 15 11:52:33 2026
 import json
 import numpy as np
 
-import matplotlib
-matplotlib.use('TkAgg')
+#import matplotlib
+#matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
  
 
@@ -142,15 +142,16 @@ pulsar_dict = {
     "J0737-3039A": {"t_age": 159,   "t_d": 85,   "f_b": 2.0},
     "J1208-5936":  {"t_age": 2500,  "t_d": 7200, "f_b": 4.6},  # MMGPS discovery
     "J1756-2251":  {"t_age": 396,   "t_d": 1690, "f_b": 4.6},
-    "J1757-1854":  {"t_age": 87,    "t_d": 76,   "f_b": 4.6},
+    "J1757-1854":  {"t_age": 87,    "t_d": 76,   "f_b": 4.1},
+    "J1856-0039":  {"t_age": 586,   "t_d": 82,   "f_b": 4.6},  # FAST discovery
     "J1906+0746":  {"t_age": 0.11,  "t_d": 60,   "f_b": 1.0},  # modified pulse profile
     "J1913+1102":  {"t_age": 2625,  "t_d": 500,  "f_b": 4.6},
-    "J1946+2052":  {"t_age": 247,   "t_d": 46,   "f_b": 4.6},
+    "J1946+2052":  {"t_age": 247,   "t_d": 46,   "f_b": 2.1},
 }
 
 
 
-result_dir = "./population_synthesis/test/"
+result_dir = "./population_synthesis/popeval_res/"
 alphares_dict = json.load(open(result_dir + "alpha_dict.json", "r"))
 
 
@@ -164,7 +165,7 @@ for pulsar_name in pulsar_dict:
 
 ## CALCULATE DISTRIBUTIONS #####
 
-N_tots = np.linspace(10, 4e3, 1000)
+N_tots = np.linspace(1, 4e3, 2000)
 
 pop_pdfs = get_pop_pdfs(N_tots, pulsar_dict)
 
@@ -182,7 +183,7 @@ rates, rate_pdfs = get_rate_pdfs(N_tots, pulsar_dict)
 
 # Plot probability distributions for the individual populations
 
-linestyles = ['-',':', '-.', '--', '-', '--', ':', '-.', '--', ':']
+linestyles = ['-',':', '-.', '--', '-', '--', ':', '-.', '--', ':', '-']
 names = list(pulsar_dict.keys())
 
 for ii, vals in enumerate(pop_pdfs):
@@ -245,9 +246,19 @@ for ii, rpdf in enumerate(rate_pdfs):
                                                  plot = False,
                                                  label = names[ii], xlabel = r"$\cal{R}$", ylabel = r"P($\cal{R}$)")
     
-    print("{:>12}: {:.2f} +{:.2f} +{:.2f}".format(names[ii], peak_rate, ul-peak_rate, peak_rate-ll))
+    print("{:>12}: {:.2f} +{:.2f} -{:.2f}".format(names[ii], peak_rate, ul-peak_rate, peak_rate-ll))
+    pulsar_dict[names[ii]]["rate"] = [peak_rate, ul-peak_rate, peak_rate-ll]
 
-plt.ylim(1e-6, 10)
+
+
+with open(result_dir + "pulsarval_dict.json", "w") as outfile:
+    json.dump(pulsar_dict, outfile, indent=4)
+outfile.close()
+    
+
+
+plt.ylim(1e-3, 50)
+plt.xlim(1e-3, 50)
 
 plt.xlabel(r"$\cal{R}$ / Myr$^{-1}$", fontsize=fsize)
 plt.ylabel(r"P($\cal{R}$)", fontsize=fsize)
@@ -269,69 +280,45 @@ plt.show()
 
 # Take each DNS system; get integer rates; create rvs distribution:
 
-def get_rvs_dist(rates_array, pdf_array, name_dns='rvs'):
-# Interpolate the original rates and pdfs to get function
-    norm_pdf = pdf_array / scipy.integrate.simpson(pdf_array, rates_array)
-    func = interp1d(rates_array, norm_pdf)
-
-# Find minimum and maximum integer rates for this DNS
-    min_rate = int(np.min(rates_array) + 1)
-    max_rate = int(np.max(rates_array) + 1)
-
-# Make new integer array:
-    new_rate_array = np.arange(min_rate, max_rate, 1)
-
-# Get the rate probability at these integer rates:
-    new_pdf = func(new_rate_array)
-# Normalize this new pdf:
-    new_pdf_norm = new_pdf / np.sum(new_pdf)
-
-# Define an RVS for this binary:
-    return st.rv_discrete(name=name_dns, values=(new_rate_array, new_pdf_norm))
+def get_pmf_on_grid(rates_array, pdf_array, grid):
+    """Interpolate input distribution onto `grid` and return a normalized PMF."""
+    func = interp1d(rates_array, pdf_array, bounds_error=False, fill_value=0.0)
+    pmf = func(grid)
+    pmf_sum = pmf.sum()
+    if pmf_sum <= 0:
+        raise ValueError("Grid does not overlap with input distribution support.")
+    return pmf / pmf_sum
 
 
-def add_two_rvs(x1, y1, x2, y2):
-# Make sure x1 and x2 are integer arrays:
-# if np.any(np.issubdtype(x1, np.int)) or np.any(np.issubdtype(x2, np.int)):
-#    sys.exit("Your input X-arrays are not integer arrays!")
+def add_two_rvs(x1, y1, x2, y2, dx=1.0):
+    lo = min(np.min(x1), np.min(x2))
+    hi = max(np.max(x1), np.max(x2))
 
-# Normalize the input pdfs
-    y1_norm = y1 / scipy.integrate.simpson(y1, x1)
-    y2_norm = y2 / scipy.integrate.simpson(y2, x2)
+    n_points = int(round((hi - lo) / dx)) + 1
+    common_foot = lo + dx * np.arange(n_points)
 
-# Create a discrete rvs for the two pdfs given
-    rvs1 = get_rvs_dist(x1, y1)
-    rvs2 = get_rvs_dist(x2, y2)
+    pmf1 = get_pmf_on_grid(x1, y1, common_foot)
+    pmf2 = get_pmf_on_grid(x2, y2, common_foot)
 
-# Create a common footing for both rvs so that convolution makes sense
-    common_foot = np.arange(int(np.min([min(x1), min(x2)])), int(np.max([max(x1), max(x2)])), 1)
-# common_foot = np.arange(0, 200, 1)
-    common_step_size = common_foot[1] - common_foot[0]
+    op_pdf = sig.convolve(pmf1, pmf2)
+    op_pdf = np.clip(op_pdf, 0, None)     # guard against tiny negative float noise
+    op_pdf /= op_pdf.sum()
 
-# Get new pdfs using common footing
-    new_y1 = rvs1.pmf(common_foot)
-    new_y2 = rvs2.pmf(common_foot)
-
-# Convolve the two pdfs
-    op_pdf = sig.convolve(new_y1, new_y2)
-
-# Compute the new X-axis:
-    op_x = np.arange(common_foot[0], common_foot[0] + len(op_pdf) * common_step_size, common_step_size)
+    # Correct output grid: starts at sum of starting points
+    op_x = 2 * common_foot[0] + dx * np.arange(len(op_pdf))
 
     return op_x, op_pdf
 
 
-rates_1913_1534, rate_pdf_1913_1534 = add_two_rvs(rates[0], rate_pdfs[0], rates[1], rate_pdfs[1])
-rates_1757_1946, rate_pdf_1757_1946 = add_two_rvs(rates[2], rate_pdfs[2], rates[3], rate_pdfs[3])
-rates_nearly_almost_all, rate_pdf_nearly_almost_all = add_two_rvs(rates_1913_1534, rate_pdf_1913_1534, rates_1757_1946, rate_pdf_1757_1946)
+def sum_all_rvs(rates_list, pdfs_list, dx=1.0):
+    rate_acc, pdf_acc = rates_list[0], pdfs_list[0]
+    for rates_i, pdf_i in zip(rates_list[1:], pdfs_list[1:]):
+        rate_acc, pdf_acc = add_two_rvs(rate_acc, pdf_acc, rates_i, pdf_i, dx=dx)
+    return rate_acc, pdf_acc
 
-rates_almost_all, pdf_almost_all = add_two_rvs(rates[4], rate_pdfs[4], rates_nearly_almost_all, rate_pdf_nearly_almost_all)
 
-rates_all, pdf_all = add_two_rvs(rates_almost_all, pdf_almost_all, rates[5], rate_pdfs[5])
+rates_final, pdf_final = sum_all_rvs(rates, rate_pdfs, dx=0.2)
 
-rates_next_to_last, pdf_next_to_last = add_two_rvs(rates_all, pdf_all, rates[6], rate_pdfs[6])
-
-rates_final, pdf_final = add_two_rvs(rates_next_to_last, pdf_next_to_last, rates[7], rate_pdfs[7])
 
 calculate_ml_and_confint(rates_final, pdf_final, conf_int = 0.90, plot=True)
 #plot_conf_int.plot_area_under_curve(rates_all, pdf_all)
@@ -339,7 +326,7 @@ calculate_ml_and_confint(rates_final, pdf_final, conf_int = 0.90, plot=True)
 
    
 plt.xscale('log')
-#plt.xlim(0, 1e3)
+plt.xlim(1, 30)
 
 plt.grid(True, which = 'both')
 plt.tight_layout()
@@ -349,7 +336,7 @@ plt.show()
 
 
 
-
+'''
 ### LIGO MERGER RATE EXTRAPOLATION ###
 #Method from Koparappu, et al. 2008
 
@@ -374,7 +361,7 @@ plt.show()
 
 
 
-
+'''
 
 
 
