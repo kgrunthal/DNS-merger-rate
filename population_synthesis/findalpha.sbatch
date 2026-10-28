@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --time=04:00:00
-#SBATCH --partition=short.q
+#SBATCH --time=12:00:00
+#SBATCH --partition=long.q
 #SBATCH --mem=0
 #SBATCH --cpus-per-task=1
 
