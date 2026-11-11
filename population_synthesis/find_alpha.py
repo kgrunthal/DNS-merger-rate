@@ -96,7 +96,7 @@ model_name = './{}_z330.model'.format(pulsar_name)
 
 print "On {}".format(pulsar_name)
 
-resfolder = "/scratch/kgrunthal/DNS-merger-rate/population_synthesis/popeval_res/"
+resfolder = "/scratch/kgrunthal/DNS-merger-rate/population_synthesis/popeval_withGPPS/"
 if not os.path.exists(resfolder):
     os.makedirs(resfolder)
 
