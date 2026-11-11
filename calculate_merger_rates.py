@@ -138,7 +138,8 @@ def get_rate_pdfs(N_tots, psrdict):
 pulsar_dict = {
     "B1534+12":    {"t_age": 208,   "t_d": 2700, "f_b": 6.0},
     "B1913+16":    {"t_age": 77,    "t_d": 301,  "f_b": 5.7},
-    "J0509+3801":  {"t_age": 153,   "t_d": 607,  "f_b": 4.6},  # newly added by Pol et al. 2020
+    "J0509+3801":  {"t_age": 153,   "t_d": 576,  "f_b": 4.6},  # newly added by Pol et al. 2020
+    "J0653+0443":  {"t_age": 6600,  "t_d": 2540, "f_b": 4.6},  # eccentric DNS from FAST
     "J0737-3039A": {"t_age": 159,   "t_d": 85,   "f_b": 2.0},
     "J1208-5936":  {"t_age": 2500,  "t_d": 7200, "f_b": 4.6},  # MMGPS discovery
     "J1756-2251":  {"t_age": 396,   "t_d": 1690, "f_b": 4.6},
