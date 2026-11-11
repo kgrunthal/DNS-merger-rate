@@ -65,14 +65,14 @@ pulsar_dict = {
     "B1534+12":    {"log_p": 1.5786392099680724,       "duty": 4.},
     "B1913+16":    {"log_p": 1.7709992051639407,       "duty": 16.9},
     "J0509+3801":  {"log_p": np.log10(76.5),           "duty": 18.},   # Pol et al. 2020
-    "J0653+0443":  {"log_p": np.log10(0.04753630554),  "duty": 7.},   # Yang et al. 2026 (eccentric system)
+    "J0653+0443":  {"log_p": np.log10(47.5363055452),  "duty": 7.},   # Yang et al. 2026 (eccentric system)
     "J0737-3039A": {"log_p": 1.3560258571931227,       "duty": 27.},
     "J0737-3039B": {"log_p": 3.4471580313422194,       "duty": None},
     "J1208-5936":  {"log_p": np.log10(28.7138598921),  "duty": 8.}, # Colom i Bernadich et al. 2023
     "J1756-2251":  {"log_p": np.log10(28.462),         "duty": 3.},
     "J1757-1854":  {"log_p": 1.3324384599156054,       "duty": 6.},
-    #"J1846-0513":  {"log_p": np.log10(0.023369539291), "duty": }  # not sure if this pulsar is merging
-    "J1856-0039":  {"log_p": np.log10(23.39156058),    "duty": None}, # 2026
+    "J1846-0513":  {"log_p": np.log10(23.369539291),   "duty": }  # not sure if this pulsar is merging
+    "J1856-0039":  {"log_p": np.log10(23.39156058),    "duty": 7.}, # 2026
     "J1906+0746":  {"log_p": np.log10(144.073),        "duty": 1.},    # Grunthal et al. 2021
     "J1913+1102":  {"log_p": np.log10(27.28500685),    "duty": 6.},
     "J1946+2052":  {"log_p": 1.2278867046136734,       "duty": 6.},
