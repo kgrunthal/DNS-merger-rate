@@ -15,9 +15,8 @@ import matplotlib.pyplot as plt
  
 
 import scipy
-import scipy.signal as sig
-import scipy.stats as st
 from scipy.interpolate import interp1d
+from scipy.signal import fftconvolve
 
 
 fsize=20
@@ -153,7 +152,7 @@ pulsar_dict = {
 
 
 
-result_dir = "./population_synthesis/popeval_res/"
+result_dir = "./population_synthesis/popeval_withGPPS/"
 alphares_dict = json.load(open(result_dir + "alpha_dict.json", "r"))
 
 
@@ -185,23 +184,26 @@ rates, rate_pdfs = get_rate_pdfs(N_tots, pulsar_dict)
 
 # Plot probability distributions for the individual populations
 
-linestyles = ['-',':', '-.', '--', '-', '--', ':', '-.', '--', ':', '-']
 names = list(pulsar_dict.keys())
 
+fig, ax = plt.subplots()
+ax.set_prop_cycle(color = plt.rcParams['axes.prop_cycle'].by_key()['color'][:9],
+                  linestyle = ['-', ':', '--', '-.', (0, (5, 5)), (0, (3, 1, 1, 1)), (0, (1, 5)), (0, (1, 1)), (0, (1, 3))])
+
 for ii, vals in enumerate(pop_pdfs):
-    plt.plot(N_tots, vals, label=names[ii], ls=linestyles[ii])
+    ax.plot(N_tots, vals, label=names[ii])
     #plot_conf_int.plot_area_under_curve(N_tots, vals, xlabel = r"$N_{\rm det}$", ylabel = r"$P(N_{\rm det})$", label = names[ii])
 
-plt.xscale('log')
+ax.set_xscale('log')
 
-plt.xlabel(r"$N_{\rm det}$", fontsize=fsize)
-plt.ylabel(r"$P(N_{\rm det})$", fontsize=fsize)
+ax.set_xlabel(r"$N_{\rm det}$", fontsize=fsize)
+ax.set_ylabel(r"$P(N_{\rm det})$", fontsize=fsize)
 
-plt.grid(True, which='both')
-plt.tight_layout()
+ax.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
+ax.grid(True, which='both')
 
 
-#plt.savefig("observable_pop_new.pdf")
+plt.savefig(result_dir + "observable_pop_new.pdf", bbox_inches='tight')
 
 plt.show()
 
@@ -238,11 +240,14 @@ plt.show()
 ###############################################################################
 
 
-#
+fig, ax = plt.subplots()
+ax.set_prop_cycle(color = plt.rcParams['axes.prop_cycle'].by_key()['color'][:9],
+                  linestyle = ['-', ':', '--', '-.', (0, (5, 5)), (0, (3, 1, 1, 1)), (0, (1, 5)), (0, (1, 1)), (0, (1, 3))])
+
 
 for ii, rpdf in enumerate(rate_pdfs):
     #print names[ii]
-    plt.loglog(rates[ii], rpdf, label=names[ii], ls=linestyles[ii])
+    ax.loglog(rates[ii], rpdf, label=names[ii])
     
     peak_rate, ll, ul = calculate_ml_and_confint(rates[ii], rpdf, 
                                                  plot = False,
@@ -259,18 +264,18 @@ outfile.close()
     
 
 
-plt.ylim(1e-3, 50)
-plt.xlim(1e-3, 50)
+ax.set_ylim(1e-3, 50)
+ax.set_xlim(1e-3, 50)
 
-plt.xlabel(r"$\cal{R}$ / Myr$^{-1}$", fontsize=fsize)
-plt.ylabel(r"P($\cal{R}$)", fontsize=fsize)
+ax.set_xlabel(r"$\cal{R}$ / Myr$^{-1}$", fontsize=fsize)
+ax.set_ylabel(r"P($\cal{R}$)", fontsize=fsize)
 
-plt.grid(True, which='both')
-plt.tight_layout()
+ax.grid(True, which='both')
 
-plt.legend(loc='best')
 
-#plt.savefig("individual_rates_new.pdf")
+ax.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
+
+plt.savefig(result_dir + "individual_rates_new.pdf", bbox_inches='tight')
 
 plt.show()
 
@@ -282,41 +287,56 @@ plt.show()
 
 # Take each DNS system; get integer rates; create rvs distribution:
 
-def get_pmf_on_grid(rates_array, pdf_array, grid):
-    """Interpolate input distribution onto `grid` and return a normalized PMF."""
-    func = interp1d(rates_array, pdf_array, bounds_error=False, fill_value=0.0)
-    pmf = func(grid)
+
+
+
+
+def get_pmf_on_grid(rates_array, pdf_array, grid, interpolation="linear"):
+    """Interpolate distribution onto grid and normalize."""
+
+    if interpolation == "linear":
+        x = rates_array
+        x_grid = grid
+
+    elif interpolation == "log":
+        if np.any(rates_array <= 0) or np.any(grid <= 0):
+            raise ValueError("Log interpolation requires positive rates.")
+
+        x = np.log10(rates_array)
+        x_grid = np.log10(grid)
+
+    else:
+        raise ValueError("interpolation must be 'linear' or 'log'.")
+
+    func = interp1d(x, pdf_array, bounds_error=False, fill_value=0.0)
+    
+    pmf = np.clip(func(x_grid), 0, None)
     pmf_sum = pmf.sum()
     if pmf_sum <= 0:
         raise ValueError("Grid does not overlap with input distribution support.")
+
     return pmf / pmf_sum
 
 
-def add_two_rvs(x1, y1, x2, y2, dx=1.0):
-    lo = min(np.min(x1), np.min(x2))
-    hi = max(np.max(x1), np.max(x2))
+def sum_all_rvs(rates_list, pdfs_list, dx=0.2, interpolation="linear"):
+
+    lo = min(np.min(r) for r in rates_list)
+    hi = max(np.max(r) for r in rates_list)
 
     n_points = int(round((hi - lo) / dx)) + 1
-    common_foot = lo + dx * np.arange(n_points)
+    common_grid = lo + dx * np.arange(n_points)
 
-    pmf1 = get_pmf_on_grid(x1, y1, common_foot)
-    pmf2 = get_pmf_on_grid(x2, y2, common_foot)
+    pmfs = [ get_pmf_on_grid(r, p, common_grid, interpolation=interpolation) for r, p in zip(rates_list, pdfs_list)]
+    pdf_final = pmfs[0]
 
-    op_pdf = sig.convolve(pmf1, pmf2)
-    op_pdf = np.clip(op_pdf, 0, None)     # guard against tiny negative float noise
-    op_pdf /= op_pdf.sum()
+    for pmf in pmfs[1:]:
+        pdf_final = fftconvolve(pdf_final, pmf)
+        pdf_final = np.clip(pdf_final, 0, None)
+        pdf_final /= pdf_final.sum()
 
-    # Correct output grid: starts at sum of starting points
-    op_x = 2 * common_foot[0] + dx * np.arange(len(op_pdf))
+    rate_final = ( len(rates_list) * common_grid[0] + dx * np.arange(len(pdf_final))  )
 
-    return op_x, op_pdf
-
-
-def sum_all_rvs(rates_list, pdfs_list, dx=1.0):
-    rate_acc, pdf_acc = rates_list[0], pdfs_list[0]
-    for rates_i, pdf_i in zip(rates_list[1:], pdfs_list[1:]):
-        rate_acc, pdf_acc = add_two_rvs(rate_acc, pdf_acc, rates_i, pdf_i, dx=dx)
-    return rate_acc, pdf_acc
+    return rate_final, pdf_final
 
 
 rates_final, pdf_final = sum_all_rvs(rates, rate_pdfs, dx=0.2)
@@ -328,7 +348,7 @@ calculate_ml_and_confint(rates_final, pdf_final, conf_int = 0.90, plot=True)
 
    
 plt.xscale('log')
-plt.xlim(1, 30)
+plt.xlim(3, 100)
 
 plt.grid(True, which = 'both')
 plt.tight_layout()

@@ -24,9 +24,10 @@ def line(x, a):
 
 
 psr_names = ["B1534+12", "B1913+16",
-             "J0509+3801", "J0737-3039A", "J1208-5936", "J1756-2251",
-             "J1757-1854", "J1856-0039", "J1906+0746", "J1913+1102", 
-             "J1946+2052"]
+             "J0509+3801", "J0653+0443", "J0737-3039A", "J1208-5936", 
+             "J1756-2251", "J1757-1854", "J1846-0513", "J1856-0039", 
+             "J1906+0746", "J1913+1102", "J1946+2052"]
+
 
 
 plotme = False
@@ -40,7 +41,7 @@ runs_per_pop = 100
 n_bins = runs_of_pop + runs_per_pop      # total number of trials for the population
 xaxis = np.arange(0, 200, 1)
 
-result_dir = "./population_synthesis/popeval_res/"
+result_dir = "./population_synthesis/popeval_withGPPS/"
 
 for pname in psr_names:
     folderpath = result_dir + "pop_result_{}".format(pname)
