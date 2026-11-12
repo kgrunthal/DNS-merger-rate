@@ -10,8 +10,9 @@
 # MMGPS-L	600s
 # GPPS		300s	
 
-
+#268 2100
 for t in 268 2100 50 120 340 265 600 300; do
+    echo $t
     sed -i "2s/.*/${t}.0D0/" params.in
-    ./gamma2exec >> 1856.txt
+    ./gamma2exec >> 0653.txt
 done

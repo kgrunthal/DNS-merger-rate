@@ -71,7 +71,7 @@ pulsar_dict = {
     "J1208-5936":  {"log_p": np.log10(28.7138598921),  "duty": 8.}, # Colom i Bernadich et al. 2023
     "J1756-2251":  {"log_p": np.log10(28.462),         "duty": 3.},
     "J1757-1854":  {"log_p": 1.3324384599156054,       "duty": 6.},
-    "J1846-0513":  {"log_p": np.log10(23.369539291),   "duty": 7.}  
+    "J1846-0513":  {"log_p": np.log10(23.369539291),   "duty": 7.}, 
     "J1856-0039":  {"log_p": np.log10(23.39156058),    "duty": 7.}, # 2026
     "J1906+0746":  {"log_p": np.log10(144.073),        "duty": 1.},    # Grunthal et al. 2021
     "J1913+1102":  {"log_p": np.log10(27.28500685),    "duty": 6.},
@@ -80,7 +80,7 @@ pulsar_dict = {
 
 
 
-surveys = ['PALFA_one_v_older', 'PHSURV', 'HTRU_low_1757', '1534_survey', 'PMSURV', 'GBNCC', "MMGPS-L", "GPPS"]
+surveys = ['PALFA_one_v_older', 'PHSURV', 'HTRU_low_1757', '1534_survey', 'PMSURV', 'GBNCC', "MMGPS-L"]
 
 pops = np.arange(10, 2000, 100) #set back lower limit to 10
 runs_of_pop = 100
@@ -91,12 +91,12 @@ lum_params = [-1.1, 0.9]       #Fiducial parameters
 
 
 
-model_name = './{}_z330.model'.format(pulsar_name)
+model_name = './{}_z330_noGPPS.model'.format(pulsar_name)
 #model_name = './1856_z330_varlum.model'
 
 print "On {}".format(pulsar_name)
 
-resfolder = "/scratch/kgrunthal/DNS-merger-rate/population_synthesis/popeval_withGPPS/"
+resfolder = "/scratch/kgrunthal/DNS-merger-rate/population_synthesis/popeval_noGPPS/"
 if not os.path.exists(resfolder):
     os.makedirs(resfolder)
 
