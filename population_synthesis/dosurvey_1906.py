@@ -269,8 +269,12 @@ def run(pop,
                 snr = snr*beam_deg_factor
 
 
-            if snr > 0.: 
-                snr = snr * (deg_fac_dict[psrname][surv] ** 2)              
+            if snr > 0.:
+                if "GPPS" in surv:
+                    deg_fac = deg_fac_dict[psrname]["GPPS"]
+                else:
+                    deg_fac = deg_fac_dict[psrname][surv]
+                snr = snr * (deg_fac ** 2)        
             ######################################################################################
             # add scintillation, if required
             # modifying S/N rather than flux is sensible because then

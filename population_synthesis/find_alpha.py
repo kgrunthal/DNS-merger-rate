@@ -82,6 +82,9 @@ pulsar_dict = {
 
 surveys = ['PALFA_one_v_older', 'PHSURV', 'HTRU_low_1757', '1534_survey', 'PMSURV', 'GBNCC', "MMGPS-L"]
 
+surveys_det = ['PALFA_one_v_older', 'PHSURV', 'HTRU_low_1757', '1534_survey', 'PMSURV', 'GBNCC', 'MMGPS-L',
+               'GPPS_a', 'GPPS_b', 'GPPS_c', 'GPPS_d1', 'GPPS_d2', 'GPPS_d3']
+
 pops = np.arange(10, 2000, 100) #set back lower limit to 10
 runs_of_pop = 100
 runs_per_pop = 100
@@ -91,12 +94,12 @@ lum_params = [-1.1, 0.9]       #Fiducial parameters
 
 
 
-model_name = './{}_z330_noGPPS.model'.format(pulsar_name)
+model_name = './{}_z330_GPPSdet.model'.format(pulsar_name)
 #model_name = './1856_z330_varlum.model'
 
 print "On {}".format(pulsar_name)
 
-resfolder = "/scratch/kgrunthal/DNS-merger-rate/population_synthesis/popeval_noGPPS/"
+resfolder = "/scratch/kgrunthal/DNS-merger-rate/population_synthesis/popeval_GPPSdet/"
 if not os.path.exists(resfolder):
     os.makedirs(resfolder)
 
@@ -129,9 +132,9 @@ for xx, npop in enumerate(pops):
                     
                 population = dosurvey_1906.loadModel(model_name)
                     
-                output = dosurvey_1906.run(population, pulsar_name, combine_spline, corr_func_MP, corr_func_IP, corr_norm, surveys, nostdout = True)
+                output = dosurvey_1906.run(population, pulsar_name, combine_spline, corr_func_MP, corr_func_IP, corr_norm, surveys_det, nostdout = True)
                     
-                detections[ii][jj] = sum(output[n][2].ndet for n in range(len(surveys)))
+                detections[ii][jj] = sum(output[n][2].ndisc for n in range(len(surveys)))
     
     
     else:
@@ -149,9 +152,9 @@ for xx, npop in enumerate(pops):
                 
                 population = dosurvey.loadModel(model_name)
             
-                output = dosurvey.run(population, pulsar_name, surveys, nostdout = True)
+                output = dosurvey.run(population, pulsar_name, surveys_det, nostdout = True)
             
-                detections[ii][jj] = sum(output[n][2].ndet for n in range(len(surveys)))
+                detections[ii][jj] = sum(output[n][2].ndisc for n in range(len(surveys)))
             
     
     np.save(filepath, detections)

@@ -268,8 +268,12 @@ def run(pop,
             
                 
                 
-            if snr > 0.: 
-                snr = snr * (deg_fac_dict[psrname][surv] ** 2)  
+            if snr > 0.:
+                if "GPPS" in surv:
+                    deg_fac = deg_fac_dict[psrname]["GPPS"]
+                else:
+                    deg_fac = deg_fac_dict[psrname][surv]
+                snr = snr * (deg_fac ** 2)  
             
 
             ######################################################################################
