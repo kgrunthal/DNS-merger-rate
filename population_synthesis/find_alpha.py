@@ -94,6 +94,7 @@ lum_params = [-1.1, 0.9]       #Fiducial parameters
 
 
 
+#model_name = './{}_z330_noGPPS.model'.format(pulsar_name)
 model_name = './{}_z330_GPPSdet.model'.format(pulsar_name)
 #model_name = './1856_z330_varlum.model'
 
@@ -134,7 +135,7 @@ for xx, npop in enumerate(pops):
                     
                 output = dosurvey_1906.run(population, pulsar_name, combine_spline, corr_func_MP, corr_func_IP, corr_norm, surveys_det, nostdout = True)
                     
-                detections[ii][jj] = sum(output[n][2].ndisc for n in range(len(surveys)))
+                detections[ii][jj] = sum(output[n][2].ndisc for n in range(len(surveys_det)))
     
     
     else:
@@ -154,7 +155,7 @@ for xx, npop in enumerate(pops):
             
                 output = dosurvey.run(population, pulsar_name, surveys_det, nostdout = True)
             
-                detections[ii][jj] = sum(output[n][2].ndisc for n in range(len(surveys)))
+                detections[ii][jj] = sum(output[n][2].ndisc for n in range(len(surveys_det)))
             
     
     np.save(filepath, detections)

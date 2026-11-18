@@ -44,11 +44,11 @@ names3=(
 
 
 # Submit one independent job per name
-for name in "${names1[@]}"; do
+for name in "${names[@]}"; do
     sbatch \
-        --job-name="find_alpha_${name}_nG" \
-        --output="logs/find_alpha_${name}_nG.out" \
-        --error="logs/find_alpha_${name}_nG.err" \
+        --job-name="find_alpha_${name}_Gdet" \
+        --output="logs/find_alpha_${name}_Gdet.out" \
+        --error="logs/find_alpha_${name}_Gdet.err" \
         findalpha.sbatch "$name"
 done
 
