@@ -138,13 +138,13 @@ pulsar_dict = {
     "B1534+12":    {"t_age": 208,   "t_d": 2700, "f_b": 6.0},
     "B1913+16":    {"t_age": 77,    "t_d": 301,  "f_b": 5.7},
     "J0509+3801":  {"t_age": 153,   "t_d": 576,  "f_b": 4.6},  # newly added by Pol et al. 2020
-    "J0653+0443":  {"t_age": 6600,  "t_d": 2540, "f_b": 4.6},  # eccentric DNS from FAST
+    "J0653+0443":  {"t_age": 6517,  "t_d": 2540, "f_b": 4.6},  # eccentric DNS from FAST
     "J0737-3039A": {"t_age": 159,   "t_d": 85,   "f_b": 2.0},
     "J1208-5936":  {"t_age": 2500,  "t_d": 7200, "f_b": 4.6},  # MMGPS discovery
     "J1756-2251":  {"t_age": 396,   "t_d": 1690, "f_b": 4.6},
     "J1757-1854":  {"t_age": 87,    "t_d": 76,   "f_b": 4.1},
-    "J1846-0513":  {"t_age": 367,   "t_d": 8700, "f_b": 4.6},  # FAST
-    "J1856-0039":  {"t_age": 586,   "t_d": 82,   "f_b": 4.6},  # FAST discovery
+    "J1846-0513":  {"t_age": 296,   "t_d": 8700, "f_b": 4.6},  # FAST
+    "J1856-0039":  {"t_age": 497,   "t_d": 82,   "f_b": 4.6},  # FAST discovery
     "J1906+0746":  {"t_age": 0.11,  "t_d": 60,   "f_b": 1.0},  # modified pulse profile
     "J1913+1102":  {"t_age": 2625,  "t_d": 500,  "f_b": 4.6},
     "J1946+2052":  {"t_age": 247,   "t_d": 46,   "f_b": 2.1},
@@ -152,7 +152,7 @@ pulsar_dict = {
 
 
 
-result_dir = "./population_synthesis/popeval_withGPPS/"
+result_dir = "./population_synthesis/popeval_noGPPS/"
 alphares_dict = json.load(open(result_dir + "alpha_dict.json", "r"))
 
 

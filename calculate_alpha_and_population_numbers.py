@@ -41,7 +41,7 @@ runs_per_pop = 100
 n_bins = runs_of_pop + runs_per_pop      # total number of trials for the population
 xaxis = np.arange(0, 200, 1)
 
-result_dir = "./population_synthesis/popeval_withGPPS/"
+result_dir = "./population_synthesis/popeval_noGPPS/"
 
 for pname in psr_names:
     folderpath = result_dir + "pop_result_{}".format(pname)
